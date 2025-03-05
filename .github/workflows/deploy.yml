@@ -1,0 +1,16 @@
+name: Deploy Churn Model
+on: push
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Train Model
+        run: python src/training/train.py
+      - name: Deploy API
+        run: |
+          docker build -t churn-api .
+          docker run -d -p 8000:8000 churn-api
